@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
+	<title>Sitky notes</title>
+	<style type="text/css">
+		html,body{
+			margin: 0;padding: 0
+		}
+		body{
+			background-color: #c6c6c6;
+		}
+		.controls{
+			/* margin: 15px auto; */
+			padding: 10px;
+			border-bottom: 2px solid red;
+			background-color: #12023d;
+			width: 100%;
+		}
+		.search{
+			 margin-right: 25px;
+			float: right;
+			-webkit-border-radius: 8px;
+			-moz-border-radius: 8px;
+			border-radius: 8px;
+		}
+		.note{
+			padding: 10px;
+			margin: 2px;
+			background-color: #FDE172;
+			border: 1px hidden #000;
+			-webkit-border-radius: 8px;
+			-moz-border-radius: 8px;
+			border-radius: 8px;
+			width: 300px;
+			float: left;
+		}
+		.note textarea{
+			background-color: #FDE172;
+			border: 0;	
+		}
+		.cl{
+			display: inline-block;
+    			vertical-align: top;
+    			color: #5f5f5f;
+    			float: right;
+		}
+	</style>
+</head>
+<body>
+	<div id="controls" class="controls">
+		<button id="create">Create new</button>
+		<input type="text" class="search" placeholder="Search..">
+	</div>
+	<div id="notes"></div>
+	<template id="temp_note">
+		<div id="note" class="note">
+			<i class="far fa-times-circle cl" id="remove"></i>
+			<textarea rows="10" cols="40" id="txt"></textarea>
+		</div>
+	</template>
+</body>
+<script type="text/javascript">
+	var id=0;
+	//prefixes of implementation that we want to test
+	window.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
+	 
+	//prefixes of window.IDB objects
+	window.IDBTransaction = window.IDBTransaction || window.webkitIDBTransaction || window.msIDBTransaction;
+	window.IDBKeyRange = window.IDBKeyRange || window.webkitIDBKeyRange || window.msIDBKeyRange
+	 
+	if (!window.indexedDB) {
+	    console.error("Your browser doesn't support a stable version of IndexedDB.")
+	}else{
+		console.log("IndexedDB is supported!")	
+	}
+	var notes = [];
+	var entries=[];
+	// indexed DB
+	var db;
+	var request = window.indexedDB.open("notes", 1);
+	 
+	request.onerror = function(event) {
+	  console.log("error: ");
+	};
+	 
+	request.onsuccess = function(event) {
+	  db = request.result;
+	  console.log("success: "+ db);
+	  read();
+	};
+	request.onupgradeneeded = function(event) {
+		console.log("start upgrade");
+		var db = event.target.result;
+        var objectStore = db.createObjectStore("notesDB", {keyPath: "id"});
+        for (var i in notes) {
+                objectStore.add(names[i]);      
+        }
+        console.log(objectStore);
+	}
+	function add(element) {
+		var myId=element.getAttribute('data-myId');
+        var obj= { 'id': myId,'txt': element.value};
+        var request = db.transaction(["notesDB"], "readwrite")
+                .objectStore("notesDB")
+                .add(obj);
+        request.onsuccess = function(event) {
+                console.log(obj.id + " added to your database.");
+        };
+         
+        request.onerror = function(event) {
+                update(obj);
+                //alert("Unable to add "+obj.id);       
+        }
+	}
+	function update(obj) {
+        var objectStore = db.transaction(["notesDB"], "readwrite").objectStore("notesDB");
+        objectStore.openCursor().onsuccess = function(event) {
+          var cursor = event.target.result;
+          if (cursor) {
+                //console.log("Name for id " + cursor.key + " is " + cursor.value.txt);
+                if(cursor.key === obj.id){
+                	var txt={'id':obj.id,'txt':obj.txt};
+                	var request=cursor.update(txt);
+	                request.onsuccess = function(event) {
+			                console.log(obj.id + " updated to your database.");
+			        };
+			         
+			        request.onerror = function(event) {
+			                //update(element);
+			                alert("Unable to update "+obj.id);       
+			        }
+                }
+                cursor.continue();
+          }
+        };     
+	}
+	function rem_data(element) {
+		var el=element.nextElementSibling;
+		var key=(el.getAttribute('data-myId'));
+        var request = db.transaction(["notesDB"], "readwrite")
+                .objectStore("notesDB")
+                .delete(key);
+        request.onsuccess = function(event) {
+          console.log("Removed from your database.");
+        };
+	}
+	function read() {
+		//var entries=[]
+        var objectStore = db.transaction("notesDB").objectStore("notesDB");
+        objectStore.openCursor().onsuccess = function(event) {
+          var cursor = event.target.result;
+          if (cursor) {
+                //console.log("Text for id " + cursor.key + " is " + cursor.value.txt);
+                entries.push({'id':cursor.key,'txt':cursor.value.txt});
+                cursor.continue();
+          }
+          else {
+          		reload(entries);
+                console.log("No more entries!");
+          }
+          
+        }; 
+        console.log('end read')  
+	}
+
+	function reload(entries){
+		for(var i in entries){
+			console.log(entries[i]);
+			create2(entries[i]);
+
+		}
+	}
+	function create2(entries){
+		var frag=document.createDocumentFragment();
+		var temp= document.getElementById('temp_note');
+		temp=temp.cloneNode(true);
+		frag.appendChild(temp.content);
+		var txt=frag.children[0].children[1];
+		txt.setAttribute('data-myId',entries.id);
+		txt.value=entries.txt;
+		blur(txt,blur);
+		document.getElementById("notes").appendChild(frag);
+	}
+</script>
+<script type="text/javascript" src="sticky.js"></script>
+</html>
