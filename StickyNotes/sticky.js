@@ -53,3 +53,4 @@
 	document.getElementById("create").addEventListener('click',create);
 	remove(document.getElementById("notes"),remove);
 	
+	
