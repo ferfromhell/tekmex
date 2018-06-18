@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        
+    </style>
+</head>
+<body>
+    <div id="caja" draggable="true" ondragstart="dragstart(this, event)" ondrag="drag(this, event)" ondragend="dragend(this, event)"> <span>Caja 1</span>
+    </div>
+    <div id="caja" draggable="true" ondragstart="dragstart(this, event)" ondrag="drag(this, event)" ondragend="dragend(this, event)"> <span>Caja 2</span>
+    </div>
+    <!-- contenedor -->
+    <div id="contenedor" ondrop="drop(this, event)" ondragenter="dragenter(this, event)" ondragover="dragover(event)" ondragleave="dragleave(this, event)">
+        Arrastra la caja aquí
+    </div>           
+</body>
+</html>

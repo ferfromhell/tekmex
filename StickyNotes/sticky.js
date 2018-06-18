@@ -4,24 +4,29 @@
 	var data = JSON.parse(localStorage.getItem('notes'));
 	//
 	function store(element){
-		//console.log(element.value);
-		//var el=document.getElementById("notes");
-		//console.log((el));
 		var myId=element.getAttribute('data-myId');
 		objA.push({'myId' : myId,'txt' : element.value});
 		
 		localStorage.setItem("notes",JSON.stringify(objA));
 	}
 	function create(entries){
+		entries=entries || null;
 		var frag=document.createDocumentFragment();
 		var temp= document.getElementById('temp_note');
 		temp=temp.cloneNode(true);
 		frag.appendChild(temp.content);
+		//console.log(frag);
 		var txt=frag.children[0].children[1];
-		txt.setAttribute('data-myId',(id++));
+		txt.setAttribute('data-myId',(id));
+		if(entries.txt != undefined){
+			//console.log('if',entries);
+			txt.value=entries.txt;
+		}
 		blur(txt,blur);
 		document.getElementById("notes").appendChild(frag);
-
+		document.getElementById('note').id='note'+id;
+		document.getElementById('note'+id).style.order=id;
+		id++;
 	}
 	function rem_note(element){
 		//console.log(element.nextElementSibling.value);
@@ -50,7 +55,28 @@
 				}
 			});
 	}
+	function search(){
+		var elements= document.getElementsByClassName('txt');
+		var text=this.value; var txtNote;
+		if(elements.length != 0){
+			for(var i=0; i<elements.length;i++){
+				if(text ==''){
+					elements[i].parentElement.style.display='block';
+				}else{
+					txtNote=elements[i].value;
+					if(txtNote.indexOf(text) === -1){
+						// console.log();
+						elements[i].parentElement.style.display='none';
+					}
+				}
+			}
+		}
+		//debugger
+	}
 	document.getElementById("create").addEventListener('click',create);
+	document.getElementById("search").addEventListener('input',search);
 	remove(document.getElementById("notes"),remove);
+	
+	//command pattern test
 	
 	
