@@ -37,7 +37,8 @@ request.onupgradeneeded = function(event) {
 }
 
 function add(element) {
-    var myId=element.getAttribute('data-myId');
+    //var myId=element.getAttribute('data-myId');
+    var myId=element.parentElement.id;
         var obj= { 'id': myId,'txt': element.value,'ord':myId};
         var request = db.transaction(["notesDB"], "readwrite")
             .objectStore("notesDB")
@@ -54,18 +55,24 @@ function add(element) {
 function update(obj) {
     var objectStore = db.transaction(["notesDB"], "readwrite").objectStore("notesDB");
     objectStore.openCursor().onsuccess = function(event) {
-      var cursor = event.target.result;
+    var cursor = event.target.result;
       if (cursor) {
-            //console.log("Name for id " + cursor.key + " is " + cursor.value.txt);
+            // console.log("Name for id " + cursor.key + " is " + cursor.value.txt);
             if(cursor.key === obj.id){
-                var txt={'id':obj.id,'txt':obj.txt};
+                var txt;
+                if(obj instanceof HTMLElement){
+                    if(obj.getAttribute('style').indexOf("order:")!= -1){
+                        console.log('Note drop',obj.children[1].value);
+                        txt={'id':obj.id,'txt':obj.children[1].value,'ord':obj.style.order}
+                    }
+                }else{
+                    txt={'id':obj.id,'txt':obj.txt,'ord':cursor.value.ord};
+                } 
                 var request=cursor.update(txt);
                 request.onsuccess = function(event) {
                         console.log(obj.id + " updated to your database.");
                 };
-                 
                 request.onerror = function(event) {
-                        //update(element);
                         alert("Unable to update "+obj.id);       
                 }
             }
@@ -90,7 +97,7 @@ function read() {
       var cursor = event.target.result;
       if (cursor) {
             //console.log("Text for id " + cursor.key + " is " + cursor.value.txt);
-            entries.push({'id':cursor.key,'txt':cursor.value.txt});
+            entries.push({'id':cursor.key,'txt':cursor.value.txt,'ord':cursor.value.ord});
             cursor.continue();
       }
       else {

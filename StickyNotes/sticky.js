@@ -25,7 +25,7 @@
 		blur(txt,blur);
 		document.getElementById("notes").appendChild(frag);
 		document.getElementById('note').id='note'+id;
-		document.getElementById('note'+id).style.order=id;
+		document.getElementById('note'+id).style.order=entries.ord ? entries.ord:id;
 		id++;
 	}
 	function rem_note(element){
