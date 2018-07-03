@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Sticky Notes Patterns</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
+</head>
+<body>
+    <div id="controls" class="controls">
+        <button id="create" class="cButton"><i class="fas fa-plus"></i></i></button>
+        <button id="undo" class="cButton" disabled><i class="fas fa-undo-alt"></i></button>
+        <button id="redo" class="cButton" disabled><i class="fas fa-redo-alt"></i></button>
+		<input  id="search" type="text" class="search" placeholder="Search..">
+    </div>
+    <div id="container"></div>
+    <template id="temp_note">
+		<div id="note" class="note" draggable="true">
+			<i class="far fa-times-circle cl" id="remove"></i>
+			<textarea id="txt" class="txt"></textarea>
+		</div>
+	</template>    
+</body>
+<!-- <script type="text/javascript" src="js/view.js"></script> -->
+<script type="text/javascript" src="js/controller.js"></script>
+<!-- <script type="text/javascript" src="js/model.js"></script> -->
+<script type="text/javascript" src="js/module_model.js"></script>
+<script type="text/javascript" src="js/view_Module.js"></script>
+<!-- <script type="text/javascript" src="js/controllerM.js"></script> -->
+
+</html>

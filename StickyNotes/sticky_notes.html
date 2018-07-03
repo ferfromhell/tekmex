@@ -12,7 +12,7 @@
 	</div>
 	<div id="notes" ondrop="drop(this, event)" ondragenter="dragenter(this, event)" ondragover="dragover(event)" ondragleave="dragleave(this, event)"></div>
 	<template id="temp_note">
-		<div id="note" class="note" draggable="true" ondragstart="dragstart(this, event)" ondrag="drag(this, event)" ondragend="dragend(this, event)">
+		<div id="note" class="note" draggable="true" ondragstart="dragstart(this, event)" ondragend="dragend(this, event)">
 			<i class="far fa-times-circle cl" id="remove"></i>
 			<textarea id="txt" class="txt"></textarea>
 		</div>
@@ -21,4 +21,5 @@
 <script type="text/javascript" src="con.js"></script>
 <script type="text/javascript" src="sticky.js"></script>
 <script type="text/javascript" src="dragdrop.js"></script>
+<script type="text/javascript" src="command.js"></script>
 </html>

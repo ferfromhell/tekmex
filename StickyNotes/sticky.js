@@ -26,7 +26,10 @@
 		document.getElementById("notes").appendChild(frag);
 		document.getElementById('note').id='note'+id;
 		document.getElementById('note'+id).style.order=entries.ord ? entries.ord:id;
+		
+		//var nota = {'id':'note'+id, 'txt':, 'ord':}
 		id++;
+		//return nota;
 	}
 	function rem_note(element){
 		//console.log(element.nextElementSibling.value);
